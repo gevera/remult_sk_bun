@@ -15,7 +15,7 @@ export const api = remultApi({
       }),
     ),
   ),
-  admin: true,
+  admin: env.RUNTIME_ENV === "development",
   modules: [
     auth({
       // Add some roles to some users with env variable.

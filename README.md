@@ -6,15 +6,14 @@ Everything you need to build a great `remult` project, powered by [`create-remul
 
 - 🚀 [Remult](https://remult.dev/): Fullstack Type-safe CRUD & Realtime 
 - 🌟 [SvelteKit](https://kit.svelte.dev/): Your favorite framework/library 
-- 💾 [Better SQLite3](https://www.npmjs.com/package/better-sqlite3): Powerful, database system 
+- 💾 [Turso/libSQL](https://www.npmjs.com/package/@libsql/client): Powerful, database system 
 - 🔒 [Better-Auth](https://www.better-auth.com/): The most comprehensive authentication framework for TypeScript. 
 
 ### 🛠 Prerequisites
 
 Before diving in, make sure you have the following tools installed:
 
-- **Node.js (v20+ 🚨)**
-- **npm (bundled with Node.js)**
+- **Bun (v1.3+ 🚨)**
 
 ### 🎯 Installation
 
@@ -27,7 +26,7 @@ git clone [YOUR REPO URL ONCE PUSHED]
 and install dependencies:
 
 ```bash
-npm install
+bun install
 ```
 
 ### 🛠 Configuration & Environment Variables
@@ -41,7 +40,7 @@ You can use [.env.example](./.env.example) as an example.
 Simply run the development server:
 
 ```bash
-npm run dev
+bun run dev
 ```
 
 ### 🚢 Production-Ready
@@ -51,11 +50,16 @@ When you're ready to go live, here's how to prepare:
 #### Build for production:
 
 ```bash
-npm run build
+bun --bun run build
 ```
 
-#### Run the production server:
 
-```bash
-npm run start
-```
+# TODO
+
+1. Update packages
+2. Add Business Entity
+3. Add CRUD
+4. Add "realtime" queries for FE
+5. Reorganize folder structure
+6. Add Module to upload files to R2 via Bun's S3 binding
+7. Add ability for background jobs/queues
