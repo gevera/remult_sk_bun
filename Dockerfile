@@ -13,6 +13,12 @@ RUN bun install --frozen-lockfile
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+# Accept build arguments for environment variables
+ARG TURSO_DATABASE_URL
+ARG TURSO_AUTH_TOKEN
+# Set as environment variables for the build process
+ENV TURSO_DATABASE_URL=$TURSO_DATABASE_URL
+ENV TURSO_AUTH_TOKEN=$TURSO_AUTH_TOKEN
 RUN bun run --bun build
 
 # Production stage
