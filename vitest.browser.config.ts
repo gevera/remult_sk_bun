@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitest/config'
 import { webdriverio } from '@vitest/browser-webdriverio'
 import tailwindcss from '@tailwindcss/vite'
-import type { KIT_ROUTES } from '$lib/ROUTES'
+import type { KIT_ROUTES } from './src/lib/ROUTES'
 import { sveltekit } from '@sveltejs/kit/vite'
 import { kitRoutes } from 'vite-plugin-kit-routes'
 

@@ -56,11 +56,10 @@ bun --bun run build
 
 # TODO
 
-1. Add Vitest
-2. Add Business Entity
-3. Add CRUD
-4. Add "realtime" queries for FE
-5. Reorganize folder structure
-6. Add Module to upload files to R2 via Bun's S3 binding
-7. Add ability for background jobs/queues
-8. Add Module for payments (use Polar.sh SDK)
+1. Add Business Entity
+2. Add CRUD
+3. Add "realtime" queries for FE
+4. Reorganize folder structure
+5. Add Module to upload files to R2 via Bun's S3 binding
+6. Add ability for background jobs/queues
+7. Add Module for payments (use Polar.sh SDK)
