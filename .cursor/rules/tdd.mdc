@@ -1,5 +1,5 @@
 ---
-alwaysApply: false
+alwaysApply: true
 ---
 # Test-Driven Development (TDD) Rule
 
@@ -64,7 +64,7 @@ This rule enforces Test-Driven Development practices, ensuring that tests are al
 
 - Test files: `*.test.ts`, `*.spec.ts`
 - Component tests: `Component.svelte.spec.ts`
-- Route tests: `+page.svelte.spec.ts`
+- Route tests: `page.svelte.spec.ts`
 - Utility tests: `utils.test.ts`
 
 ## Commands for TDD Workflow
@@ -131,7 +131,7 @@ describe("Component", () => {
 });
 ```
 
-### E2E Testing:
+<!-- ### E2E Testing:
 
 ```typescript
 import { test, expect } from "@playwright/test";
@@ -141,14 +141,14 @@ test("user can complete workflow", async ({ page }) => {
   await page.click('[data-testid="button"]');
   await expect(page.locator('[data-testid="result"]')).toBeVisible();
 });
-```
+``` -->
 
 ## Quality Gates
 
 ### Before Committing:
 
-1. **All tests must pass** - `pnpm test`
-2. **Coverage must be maintained** - `pnpm test --coverage`
+1. **All tests must pass** - `bun run test`
+2. **Coverage must be maintained** - `bun run test --coverage`
 3. **No test failures** - All tests green
 4. **New functionality tested** - New features have tests
 
@@ -184,17 +184,17 @@ test("user can complete workflow", async ({ page }) => {
 
 ```bash
 # Watch mode for continuous testing
-pnpm test:unit --watch
+bun run test:unit --watch
 
 # Run specific test file
-pnpm test src/path/to/test.spec.ts
+bun run test src/path/to/test.spec.ts
 
 # Run tests with coverage
-pnpm test --coverage
+bun run test --coverage
 
-# Run E2E tests
-pnpm test --e2e
-```
+# # Run E2E tests
+# pnpm test --e2e
+# ```
 
 ### IDE Integration:
 
