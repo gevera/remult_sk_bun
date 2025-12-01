@@ -6,7 +6,7 @@
 </script>
 
 <section class="">
-  <h2 class="text-center my-5 text-5xl font-light">SvelteKit + Remult + Turso</h2>
+  <h1 class="text-center my-5 text-5xl font-light uppercase">SvelteKit + Remult + Turso</h1>
 
   <div class="tiles">
     <Tile
