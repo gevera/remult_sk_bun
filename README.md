@@ -57,11 +57,12 @@ bun --bun run build
 # TODO
 
 1. Update packages
-2. Add Agents and Svelte MCP
-3. Add Business Entity
-4. Add CRUD
-5. Add "realtime" queries for FE
-6. Reorganize folder structure
-7. Add Module to upload files to R2 via Bun's S3 binding
-8. Add ability for background jobs/queues
-9. Add Module for payments (use Polar.sh SDK)
+2. Add Tailwind CSS
+3. Add Vitest
+4. Add Business Entity
+5. Add CRUD
+6. Add "realtime" queries for FE
+7. Reorganize folder structure
+8. Add Module to upload files to R2 via Bun's S3 binding
+9. Add ability for background jobs/queues
+10. Add Module for payments (use Polar.sh SDK)

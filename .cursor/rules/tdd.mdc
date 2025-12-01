@@ -1,0 +1,224 @@
+---
+alwaysApply: false
+---
+# Test-Driven Development (TDD) Rule
+
+## Overview
+
+You are my strict TDD pair programmer. We are following red/green/refactor at every step.
+This rule enforces Test-Driven Development practices, ensuring that tests are always written before implementing any code functionality.
+
+## Core TDD Principles
+
+### 1. Red-Green-Refactor Cycle
+
+- **RED**:
+  - Write a failing test first for the next smallest unit of behavior.
+  - Do not write implementation yet. Explain what the test is verifying and why.
+  - Label this step as # RED
+- **GREEN**: - Write the simplest and minimal code to make the test pass. - Avoid overengineering or anticipating future needs. - Confirm that all tests pass (existing + new) - Label this step as # GREEN
+  ✅ Commit message (only after test passes):
+  "feat: implement [feature/behavior] to pass test"
+
+- **REFACTOR**: Improve the code while keeping tests green
+  - During REFACTOR, do NOT change anything besides any necessary updates. Instead, help me plan to refactor my existing code to improve readability, structure, or performance.
+  - When I am ready, proceed again to RED.
+
+**IMPORTANT**:
+
+- No skipping steps.
+- No test-first = no code.
+- Only commit on clean GREEN.
+- Each loop should be tight and focused, no solving 3 things at once.
+- If I give you a feature idea, you figure out the next RED test to write.
+
+### 2. Test-First Development
+
+- **ALWAYS** write tests before implementing any feature
+- **NEVER** write production code without a corresponding test
+- **ALWAYS** ensure tests fail initially (Red phase)
+
+### 3. Test Coverage Requirements
+
+- All new features must have comprehensive test coverage
+- All bug fixes must include regression tests
+- All refactoring must maintain existing test coverage
+
+## Implementation Guidelines
+
+### Before Writing Any Code:
+
+1. **Write the test first** - Define the expected behavior
+2. **Run the test** - Ensure it fails (Red phase)
+3. **Write minimal code** - Just enough to make the test pass (Green phase)
+4. **Refactor if needed** - Improve code while keeping tests green
+
+### Test Types to Consider:
+
+- **Unit Tests**: Test individual functions/components
+- **Integration Tests**: Test component interactions
+- **E2E Tests**: Test complete user workflows
+- **Browser Tests**: Test browser-specific functionality
+
+### File Naming Conventions:
+
+- Test files: `*.test.ts`, `*.spec.ts`
+- Component tests: `Component.svelte.spec.ts`
+- Route tests: `+page.svelte.spec.ts`
+- Utility tests: `utils.test.ts`
+
+## Commands for TDD Workflow
+
+### 1. Start TDD Session
+
+```bash
+# Start tests in watch mode for continuous feedback
+pnpm test:unit --watch
+```
+
+### 2. Write Failing Test
+
+```bash
+# Create test file and write failing test
+touch src/path/to/feature.test.ts
+```
+
+### 3. Make Test Pass
+
+```bash
+# Implement minimal code to pass test
+# Run tests to verify
+pnpm test
+```
+
+### 4. Refactor
+
+```bash
+# Improve code while keeping tests green
+pnpm test:unit --watch
+```
+
+## TDD Best Practices
+
+### Test Structure (AAA Pattern):
+
+```typescript
+describe("FeatureName", () => {
+  it("should do something specific", () => {
+    // Arrange - Set up test data
+    const input = "test data";
+
+    // Act - Execute the function
+    const result = functionToTest(input);
+
+    // Assert - Verify the result
+    expect(result).toBe("expected output");
+  });
+});
+```
+
+### Svelte Component Testing:
+
+```typescript
+import { render, screen } from "@testing-library/svelte";
+import Component from "./Component.svelte";
+
+describe("Component", () => {
+  it("should render correctly", () => {
+    render(Component, { props: { title: "Test" } });
+    expect(screen.getByText("Test")).toBeInTheDocument();
+  });
+});
+```
+
+### E2E Testing:
+
+```typescript
+import { test, expect } from "@playwright/test";
+
+test("user can complete workflow", async ({ page }) => {
+  await page.goto("/");
+  await page.click('[data-testid="button"]');
+  await expect(page.locator('[data-testid="result"]')).toBeVisible();
+});
+```
+
+## Quality Gates
+
+### Before Committing:
+
+1. **All tests must pass** - `pnpm test`
+2. **Coverage must be maintained** - `pnpm test --coverage`
+3. **No test failures** - All tests green
+4. **New functionality tested** - New features have tests
+
+### Code Review Checklist:
+
+- [ ] Tests written before implementation
+- [ ] Tests cover happy path and edge cases
+- [ ] Tests are readable and maintainable
+- [ ] No production code without tests
+- [ ] Test coverage maintained or improved
+
+## Anti-Patterns to Avoid
+
+### ❌ Don't Do:
+
+- Write code first, then tests
+- Skip tests for "simple" features
+- Write tests that always pass
+- Ignore failing tests
+- Write tests after implementation
+
+### ✅ Do Instead:
+
+- Write tests first, always
+- Test all features, simple or complex
+- Write tests that fail initially
+- Fix failing tests immediately
+- Write tests before any code
+
+## Tools and Commands
+
+### Essential TDD Commands:
+
+```bash
+# Watch mode for continuous testing
+pnpm test:unit --watch
+
+# Run specific test file
+pnpm test src/path/to/test.spec.ts
+
+# Run tests with coverage
+pnpm test --coverage
+
+# Run E2E tests
+pnpm test --e2e
+```
+
+### IDE Integration:
+
+- Use Vitest extension for VS Code
+- Enable test watching in your IDE
+- Use test coverage highlighting
+- Set up test debugging
+
+## Remember: TDD is a Discipline
+
+- **Discipline**: Always write tests first
+- **Patience**: Take time to write good tests
+- **Consistency**: Apply TDD to every feature
+- **Quality**: Better tests lead to better code
+- **Confidence**: Tests give you confidence to refactor
+
+## Success Metrics
+
+- 100% test coverage for new features
+- All tests pass before commits
+- Tests catch bugs before production
+- Code is more maintainable and reliable
+- Development velocity increases over time
+
+---
+
+**Remember**: The goal of TDD is not just testing, but better design, cleaner code, and increased confidence in your software.
