@@ -19,7 +19,7 @@ ARG TURSO_AUTH_TOKEN
 # Set as environment variables for the build process
 ENV TURSO_DATABASE_URL=$TURSO_DATABASE_URL
 ENV TURSO_AUTH_TOKEN=$TURSO_AUTH_TOKEN
-RUN bun run --bun build
+RUN bun run build
 
 # Production stage
 FROM base AS runner
