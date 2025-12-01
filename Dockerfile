@@ -30,6 +30,9 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
 
+# Install curl for healthcheck
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
 # Copy built application
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/package.json ./package.json
