@@ -63,3 +63,4 @@ bun --bun run build
 5. Reorganize folder structure
 6. Add Module to upload files to R2 via Bun's S3 binding
 7. Add ability for background jobs/queues
+8. Add Module for payments (use Polar.sh SDK)
