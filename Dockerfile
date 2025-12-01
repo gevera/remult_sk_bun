@@ -7,6 +7,8 @@ WORKDIR /app
 # Install dependencies stage
 FROM base AS deps
 COPY package.json bun.lock ./
+# Copy config files needed for svelte-kit sync during install
+COPY svelte.config.js vite.config.ts tsconfig.json ./
 RUN bun install --frozen-lockfile
 
 # Build stage
