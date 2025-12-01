@@ -2,17 +2,21 @@
   import Tile from "../demo/Tile.svelte";
   import Auth from "../demo/auth/Auth.svelte";
   import Admin from "../demo/Admin.svelte";
-  import "../styles.css";
+  import { route } from "$lib/ROUTES";
 </script>
-<div class="tiles">
-  <Tile
+
+<section class="">
+  <h2 class="text-center my-5 text-5xl font-light">SvelteKit + Remult + Turso</h2>
+
+  <div class="tiles">
+    <Tile
     title="sk_remult_turso"
     subtitle=""
     icon="remult"
     className="intro"
     status="Success"
     width="half"
-  >
+    >
     <div class="tile__title">What's next?</div>
     <div class="button-row">
       <a class="button" href="https://learn.remult.dev/" target="_blank">
@@ -21,9 +25,12 @@
       <a class="button" href="https://remult.dev/docs" target="_blank">
         Documentation
       </a>
-      <a class="button" href="https://github.com/remult/remult" target="_blank">
-        Github
-      </a>
+        <a class="button" href="https://github.com/remult/remult" target="_blank">
+          Github
+        </a>
+        <a class="button" href={route('/about')}>
+          About
+        </a>
     </div>
     <div class="intro__stack">
       <div class="intro__stack-item">
@@ -43,3 +50,5 @@
   <Auth />
   <Admin />
 </div>
+
+</section>

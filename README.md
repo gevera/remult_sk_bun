@@ -57,7 +57,6 @@ bun --bun run build
 # TODO
 
 1. Update packages
-2. Add Tailwind CSS
 3. Add Vitest
 4. Add Business Entity
 5. Add CRUD
