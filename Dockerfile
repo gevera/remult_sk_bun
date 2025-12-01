@@ -1,5 +1,5 @@
 # Use Bun as base image
-FROM oven/bun:1 AS base
+FROM oven/bun:latest AS base
 
 # Set working directory
 WORKDIR /app
@@ -19,7 +19,7 @@ ARG TURSO_AUTH_TOKEN
 # Set as environment variables for the build process
 ENV TURSO_DATABASE_URL=$TURSO_DATABASE_URL
 ENV TURSO_AUTH_TOKEN=$TURSO_AUTH_TOKEN
-RUN bun run build
+RUN bun --bun run build
 
 # Production stage
 FROM base AS runner
