@@ -10,6 +10,11 @@
 	let searchQuery: string = $state('');
 	let files: FileEntity[] = $state([]);
 	let loading: boolean = $state(false);
+	
+	// Cache for thumbnail URLs to avoid regenerating presigned URLs
+	let thumbnailUrls: Record<string, string> = $state({});
+	let thumbnailLoading: Record<string, boolean> = $state({});
+	let thumbnailErrors: Record<string, boolean> = $state({});
 
 	const handleFileSelect = (e: Event) => {
 		const target = e.target as HTMLInputElement;
@@ -115,6 +120,40 @@
 		return dateObj.toLocaleDateString();
 	}
 
+	const isImageFile = (file: FileEntity): boolean => {
+		return file.mimeType.startsWith('image/');
+	}
+
+	const loadThumbnail = async (file: FileEntity) => {
+		if (!isImageFile(file)) {
+			return;
+		}
+
+		// Skip if already cached, loading, or errored
+		if (thumbnailUrls[file.id] || thumbnailLoading[file.id] || thumbnailErrors[file.id]) {
+			return;
+		}
+
+		try {
+			thumbnailLoading[file.id] = true;
+			const url = await S2FilesController.getDownloadUrl(file.id);
+			thumbnailUrls[file.id] = url;
+		} catch (err) {
+			thumbnailErrors[file.id] = true;
+		} finally {
+			thumbnailLoading[file.id] = false;
+		}
+	}
+
+	// Load thumbnails for image files when files change
+	$effect(() => {
+		for (const file of files) {
+			if (isImageFile(file)) {
+				loadThumbnail(file);
+			}
+		}
+	});
+
 	// Load files on mount
 	loadFiles();
 </script>
@@ -198,6 +237,9 @@
 						<thead class="bg-gray-50">
 							<tr>
 								<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+									Preview
+								</th>
+								<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
 									Filename
 								</th>
 								<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -215,8 +257,32 @@
 							</tr>
 						</thead>
 						<tbody class="bg-white divide-y divide-gray-200">
-							{#each files as file}
+							{#each files as file (file.id)}
 								<tr>
+									<td class="px-6 py-4 whitespace-nowrap">
+										{#if isImageFile(file)}
+											{#if thumbnailUrls[file.id]}
+												<img
+													src={thumbnailUrls[file.id]}
+													alt={file.filename}
+													class="w-28 h-28 object-contain rounded border border-gray-200 bg-gray-50 hover:border-gray-300 transition-colors"
+													onerror={() => thumbnailErrors[file.id] = true}
+												/>
+											{:else if thumbnailLoading[file.id]}
+												<div class="w-28 h-28 flex items-center justify-center bg-gray-100 rounded border border-gray-200">
+													<span class="text-xs text-gray-500">Loading...</span>
+												</div>
+											{:else if thumbnailErrors[file.id]}
+												<div class="w-28 h-28 flex items-center justify-center bg-gray-50 rounded border border-gray-200">
+													<span class="text-xs text-gray-400">Error</span>
+												</div>
+											{:else}
+												<div class="w-28 h-28 flex items-center justify-center bg-gray-50 rounded border border-gray-200">
+													<span class="text-xs text-gray-400">No preview</span>
+												</div>
+											{/if}
+										{/if}
+									</td>
 									<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
 										{file.filename}
 									</td>
