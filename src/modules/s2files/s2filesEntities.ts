@@ -1,12 +1,12 @@
 import { Entity, Fields } from 'remult';
-import { Roles } from '../../demo/auth/Roles';
+import { Roles_S2Files } from './Roles_S2Files';
 
 @Entity('files', {
 	allowApiCrud: false,
 	allowApiInsert: 'signedIn',
 	allowApiRead: 'signedIn',
 	allowApiUpdate: false,
-	allowApiDelete: Roles.Admin
+	allowApiDelete: Roles_S2Files.S2Files_Admin
 })
 export class File {
 	@Fields.id()

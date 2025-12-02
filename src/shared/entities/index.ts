@@ -1,3 +1,3 @@
 export { Room } from './Room';
-export { File } from './File';
+export { File } from '$modules/s2files';
 

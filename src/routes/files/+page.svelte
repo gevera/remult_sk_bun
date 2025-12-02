@@ -1,24 +1,112 @@
 <script lang="ts">
   import type { File as FileEntity } from "$entities";
+  import { S2FilesController } from "$modules/s2files";
 
-	let error: string | undefined =$state(undefined);
+	let error: string | undefined = $state(undefined);
 	let fileInput: HTMLInputElement | undefined = $state(undefined);
 	let selectedFile: File | undefined = $state(undefined);
 	let uploading: boolean = $state(false);
 	let searchQuery: string = $state('');
 	let files: FileEntity[] = $state([]);
-	let loading: boolean = $state(false);	
-	const handleFileSelect = (e: Event) => {}
-	const handleUpload = () => {}
-	const handleSearch = () => {}
-	const handleDownload = (file: FileEntity) => {}
-	const handleDelete = (file: FileEntity) => {}
+	let loading: boolean = $state(false);
+
+	const handleFileSelect = (e: Event) => {
+		const target = e.target as HTMLInputElement;
+		if (target.files && target.files.length > 0) {
+			selectedFile = target.files[0];
+			error = undefined;
+		}
+	}
+
+	const handleUpload = async () => {
+		if (!selectedFile) return;
+
+		uploading = true;
+		error = undefined;
+
+		try {
+			// Convert file to base64 using browser APIs
+			const arrayBuffer = await selectedFile.arrayBuffer();
+			const bytes = new Uint8Array(arrayBuffer);
+			const binary = bytes.reduce((acc, byte) => acc + String.fromCharCode(byte), '');
+			const base64 = btoa(binary);
+
+			// Upload via backend method
+			await S2FilesController.upload(
+				selectedFile.name,
+				selectedFile.type,
+				base64
+			);
+
+			// Refresh file list
+			await loadFiles();
+
+			// Reset form
+			selectedFile = undefined;
+			if (fileInput) {
+				fileInput.value = '';
+			}
+		} catch (err) {
+			error = err instanceof Error ? err.message : 'Failed to upload file';
+		} finally {
+			uploading = false;
+		}
+	}
+
+	const handleSearch = async () => {
+		await loadFiles();
+	}
+
+	const loadFiles = async () => {
+		loading = true;
+		error = undefined;
+
+		try {
+			files = await S2FilesController.listAll(searchQuery || undefined);
+		} catch (err) {
+			error = err instanceof Error ? err.message : 'Failed to load files';
+			files = [];
+		} finally {
+			loading = false;
+		}
+	}
+
+	const handleDownload = async (file: FileEntity) => {
+		try {
+			// For now, we'll need to implement a presigned URL method
+			// or use the S3 client directly on the server
+			// This is a placeholder - you may want to add a getDownloadUrl backend method
+			error = 'Download functionality not yet implemented';
+		} catch (err) {
+			error = err instanceof Error ? err.message : 'Failed to download file';
+		}
+	}
+
+	const handleDelete = async (file: FileEntity) => {
+		if (!confirm(`Are you sure you want to delete ${file.filename}?`)) {
+			return;
+		}
+
+		try {
+			await S2FilesController.delete(file.id);
+			await loadFiles();
+		} catch (err) {
+			error = err instanceof Error ? err.message : 'Failed to delete file';
+		}
+	}
+
 	const formatFileSize = (size: number) => {
 		return (size / 1024 / 1024).toFixed(2) + ' MB';
 	}
-	const formatDate = (date: Date) => {
-		return date.toLocaleDateString();
+
+	const formatDate = (date: Date | string | undefined) => {
+		if (!date) return '';
+		const dateObj = date instanceof Date ? date : new Date(date);
+		return dateObj.toLocaleDateString();
 	}
+
+	// Load files on mount
+	loadFiles();
 </script>
 
 <div class="container mx-auto p-6 max-w-6xl">
@@ -49,7 +137,7 @@
 				/>
 				{#if selectedFile}
 					<p class="mt-2 text-sm text-gray-600">
-						Selected: {selectedFile?.filename}
+						Selected: {selectedFile?.name}
 					</p>
 				{/if}
 			</div>
