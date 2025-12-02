@@ -34,6 +34,12 @@ bun install
 You'll need to set up some **environment variables** in your `.env` file. 
 You can use [.env.example](./.env.example) as an example.
 
+#### Required Environment Variables:
+
+- **Database**: `TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN`
+- **Auth**: `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`
+- **Cloudflare R2**: `R2_ENDPOINT`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `R2_REGION`
+
 
 ### 🧑‍💻 Running the Dev Environment
 
@@ -53,12 +59,9 @@ When you're ready to go live, here's how to prepare:
 bun --bun run build
 ```
 
-
 # TODO
-
 
 1. Protect API so it wont be available from outside the app
 2. Reorganize folder structure
-3. Add Module to upload files to R2 via Bun's S3 binding
-4. Add ability for background jobs/queues
-5. Add Module for payments (use Polar.sh SDK)
+3. Add ability for background jobs/queues
+4. Add Module for payments (use Polar.sh SDK)
