@@ -1,6 +1,6 @@
 <script lang="ts">
   import { repo } from "remult";
-  import { Room } from "../../shared/entities/Room";
+  import { Room } from "$entities";
   import { route } from "$lib/ROUTES";
 
   let rooms = $state<Room[]>([]);

@@ -5,7 +5,7 @@ import { TursoDataProvider } from "remult/remult-turso";
 
 import { auth } from "../demo/auth/server/index";
 import { env } from "$env/dynamic/private";
-import { Room } from "../shared/entities/Room";
+import { Room } from "$entities";
 
 export const api = remultApi({
   entities: [Room],

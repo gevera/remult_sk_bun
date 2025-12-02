@@ -16,6 +16,8 @@ const config = {
 		adapter: adapter(),
 		alias: {
 			'$modules': './src/modules',
+			'$server': './src/server',
+			'$entities': './src/shared/entities',
 		}
 	}
 };
