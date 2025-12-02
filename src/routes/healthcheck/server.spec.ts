@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { GET } from './+server';
 import type { RequestEvent } from './$types';
 
-describe('/api/health', () => {
+describe('/healthcheck', () => {
 	it('should return status 200 with { status: "ok" }', async () => {
 		const event = {} as RequestEvent;
 		const response = await GET(event);

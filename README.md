@@ -56,9 +56,9 @@ bun --bun run build
 
 # TODO
 
-1. Move health endpoint out of api to /healthcheck
-2. Protect API so it wont be available from outside the app
-3. Reorganize folder structure
-4. Add Module to upload files to R2 via Bun's S3 binding
-5. Add ability for background jobs/queues
-6. Add Module for payments (use Polar.sh SDK)
+
+1. Protect API so it wont be available from outside the app
+2. Reorganize folder structure
+3. Add Module to upload files to R2 via Bun's S3 binding
+4. Add ability for background jobs/queues
+5. Add Module for payments (use Polar.sh SDK)

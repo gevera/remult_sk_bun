@@ -17,7 +17,7 @@ const PAGES = {
  * SERVERS
  */
 const SERVERS = {
-  "GET /api/health": `/api/health`
+  "GET /healthcheck": `/healthcheck`
 }
 
 /**
@@ -140,7 +140,7 @@ export function route<T extends keyof AllTypes>(key: T, ...params: any[]): strin
 */
 export type KIT_ROUTES = {
   PAGES: { '/': never, '/about': never }
-  SERVERS: { 'GET /api/health': never }
+  SERVERS: { 'GET /healthcheck': never }
   ACTIONS: Record<string, never>
   LINKS: Record<string, never>
   Params: Record<string, never>
