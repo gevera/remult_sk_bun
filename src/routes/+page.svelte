@@ -7,6 +7,8 @@
 
 <section class="">
   <h1 class="text-center my-5 text-5xl font-light uppercase">SvelteKit + Remult + Turso</h1>
+  <a href={route('/about')}>About</a>
+
 
   <div class="tiles">
     <Tile

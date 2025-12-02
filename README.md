@@ -56,10 +56,9 @@ bun --bun run build
 
 # TODO
 
-1. Add Business Entity
-2. Add CRUD
-3. Add "realtime" queries for FE
-4. Reorganize folder structure
-5. Add Module to upload files to R2 via Bun's S3 binding
-6. Add ability for background jobs/queues
-7. Add Module for payments (use Polar.sh SDK)
+1. Move health endpoint out of api to /healthcheck
+2. Protect API so it wont be available from outside the app
+3. Reorganize folder structure
+4. Add Module to upload files to R2 via Bun's S3 binding
+5. Add ability for background jobs/queues
+6. Add Module for payments (use Polar.sh SDK)

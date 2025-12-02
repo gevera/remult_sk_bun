@@ -5,8 +5,10 @@ import { TursoDataProvider } from "remult/remult-turso";
 
 import { auth } from "../demo/auth/server/index";
 import { env } from "$env/dynamic/private";
+import { Room } from "../shared/entities/Room";
 
 export const api = remultApi({
+  entities: [Room],
   dataProvider: new SqlDatabase(
     new TursoDataProvider(
       createClient({
