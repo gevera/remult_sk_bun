@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { remult } from 'remult';
+import { remult, InMemoryDataProvider } from 'remult';
 import { S2FilesController } from './s2filesController';
 
 // Mock Bun S3Client
@@ -9,13 +9,19 @@ const mockS3Client = {
   exists: vi.fn(),
 };
 
+const mockS3Presign = vi.fn();
+
 vi.mock('bun', () => ({
   S3Client: vi.fn().mockImplementation(() => mockS3Client),
+  s3: {
+    presign: mockS3Presign,
+  },
 }));
 
 // Mock the S3 client helper
 vi.mock('./server/index', () => ({
   getS3Client: vi.fn(() => mockS3Client),
+  generateFileUUID: vi.fn(() => 'test-uuid'),
 }));
 
 // Mock crypto
@@ -33,6 +39,12 @@ describe('S2FilesController', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    
+    // Configure Remult with in-memory data provider for tests
+    // This allows @BackendMethod methods to execute directly without HTTP calls
+    remult.dataProvider = new InMemoryDataProvider();
+    
+    // Mock the repository methods
     vi.spyOn(remult, 'repo').mockReturnValue(mockFileRepo as any);
     vi.spyOn(remult, 'authenticated').mockReturnValue(true);
     remult.user = { id: 'user-id', name: 'Test User', roles: [] };
@@ -254,6 +266,98 @@ describe('S2FilesController', () => {
 
       // Act & Assert
       await expect(S2FilesController.listAll()).rejects.toThrow('Authentication required');
+    });
+  });
+
+  describe('getDownloadUrl', () => {
+    it('should generate presigned URL for valid file', async () => {
+      // Arrange
+      const fileId = 'test-id';
+      const mockFile = {
+        id: fileId,
+        filename: 'test.txt',
+        key: 'files/test-uuid.txt',
+        mimeType: 'text/plain',
+        size: 100,
+      };
+      const expectedPresignedUrl = 'https://example.com/presigned-url?signature=abc123';
+      
+      mockFileRepo.findId.mockResolvedValue(mockFile);
+      mockS3Presign.mockReturnValue(expectedPresignedUrl);
+
+      // Act
+      const result = await S2FilesController.getDownloadUrl(fileId);
+
+      // Assert
+      expect(mockFileRepo.findId).toHaveBeenCalledWith(fileId);
+      expect(mockS3Presign).toHaveBeenCalledWith('files/test-uuid.txt', {
+        expiresIn: 3600,
+        method: 'GET',
+      });
+      expect(result).toBe(expectedPresignedUrl);
+    });
+
+    it('should require signed-in user', async () => {
+      // Arrange
+      const fileId = 'test-id';
+      vi.spyOn(remult, 'authenticated').mockReturnValue(false);
+
+      // Act & Assert
+      await expect(S2FilesController.getDownloadUrl(fileId)).rejects.toThrow('Authentication required');
+    });
+
+    it('should throw error if file not found', async () => {
+      // Arrange
+      const fileId = 'non-existent-id';
+      mockFileRepo.findId.mockResolvedValue(null);
+
+      // Act & Assert
+      await expect(S2FilesController.getDownloadUrl(fileId)).rejects.toThrow('File not found');
+    });
+
+    it('should use correct S3 key from file entity', async () => {
+      // Arrange
+      const fileId = 'test-id';
+      const mockFile = {
+        id: fileId,
+        filename: 'document.pdf',
+        key: 'files/custom-key.pdf',
+        mimeType: 'application/pdf',
+        size: 5000,
+      };
+      const expectedPresignedUrl = 'https://example.com/presigned-url';
+      
+      mockFileRepo.findId.mockResolvedValue(mockFile);
+      mockS3Presign.mockReturnValue(expectedPresignedUrl);
+
+      // Act
+      await S2FilesController.getDownloadUrl(fileId);
+
+      // Assert
+      expect(mockS3Presign).toHaveBeenCalledWith('files/custom-key.pdf', {
+        expiresIn: 3600,
+        method: 'GET',
+      });
+    });
+
+    it('should handle S3 presigning errors', async () => {
+      // Arrange
+      const fileId = 'test-id';
+      const mockFile = {
+        id: fileId,
+        filename: 'test.txt',
+        key: 'files/test-uuid.txt',
+        mimeType: 'text/plain',
+        size: 100,
+      };
+      
+      mockFileRepo.findId.mockResolvedValue(mockFile);
+      mockS3Presign.mockImplementation(() => {
+        throw new Error('S3 presigning error');
+      });
+
+      // Act & Assert
+      await expect(S2FilesController.getDownloadUrl(fileId)).rejects.toThrow('Failed to generate download URL');
     });
   });
 });

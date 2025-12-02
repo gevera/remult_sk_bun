@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { File as FileEntity } from "$entities";
+  import { route } from "$lib/ROUTES";
   import { S2FilesController } from "$modules/s2files";
 
 	let error: string | undefined = $state(undefined);
@@ -73,10 +74,19 @@
 
 	const handleDownload = async (file: FileEntity) => {
 		try {
-			// For now, we'll need to implement a presigned URL method
-			// or use the S3 client directly on the server
-			// This is a placeholder - you may want to add a getDownloadUrl backend method
-			error = 'Download functionality not yet implemented';
+			error = undefined;
+			
+			// Get presigned URL from backend
+			const presignedUrl = await S2FilesController.getDownloadUrl(file.id);
+			
+			// Create temporary anchor element to trigger download
+			const link = document.createElement('a');
+			link.href = presignedUrl;
+			link.download = file.filename;
+			link.target = '_blank'; // Open in new tab as fallback
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
 		} catch (err) {
 			error = err instanceof Error ? err.message : 'Failed to download file';
 		}
@@ -111,6 +121,7 @@
 
 <div class="container mx-auto p-6 max-w-6xl">
 	<h1 class="text-3xl font-bold mb-8">File Management</h1>
+	<a href={route('/')}>Home</a>
 
 	<!-- Error Message -->
 	{#if error}

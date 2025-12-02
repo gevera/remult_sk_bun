@@ -116,5 +116,35 @@ export class S2FilesController {
 
     return await fileRepo.find();
   }
+
+  @BackendMethod({ allowed: Allow.authenticated })
+  static async getDownloadUrl(id: string): Promise<string> {
+    if (!remult.authenticated()) {
+      throw new Error('Authentication required');
+    }
+
+    const fileRepo = remult.repo(File);
+
+    // Find file
+    const file = await fileRepo.findId(id);
+    if (!file) {
+      throw new Error('File not found');
+    }
+
+    try {
+      // Lazy import s3 from bun to avoid importing server code in browser bundle
+      const { s3 } = await import('bun');
+      
+      // Generate presigned URL with 1 hour expiration
+      const presignedUrl = s3.presign(file.key, {
+        expiresIn: 3600, // 1 hour in seconds
+        method: 'GET',
+      });
+
+      return presignedUrl;
+    } catch (error) {
+      throw new Error(`Failed to generate download URL: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
 }
 
