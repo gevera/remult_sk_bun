@@ -132,11 +132,23 @@ export class S2FilesController {
     }
 
     try {
-      // Lazy import s3 from bun to avoid importing server code in browser bundle
+      // Lazy import s3 and env from bun to avoid importing server code in browser bundle
       const { s3 } = await import('bun');
+      const { env } = await import('$env/dynamic/private');
       
+      // Validate S3 credentials
+      if (!env.R2_ENDPOINT || !env.R2_ACCESS_KEY_ID || !env.R2_SECRET_ACCESS_KEY || !env.R2_BUCKET_NAME) {
+        throw new Error("Missing S3 credentials. 'accessKeyId', 'secretAccessKey', 'bucket', and 'endpoint' are required");
+      }
+
       // Generate presigned URL with 1 hour expiration
+      // Pass credentials directly to presign method
       const presignedUrl = s3.presign(file.key, {
+        accessKeyId: env.R2_ACCESS_KEY_ID,
+        secretAccessKey: env.R2_SECRET_ACCESS_KEY,
+        bucket: env.R2_BUCKET_NAME,
+        endpoint: env.R2_ENDPOINT,
+        region: env.R2_REGION || 'auto',
         expiresIn: 3600, // 1 hour in seconds
         method: 'GET',
       });
